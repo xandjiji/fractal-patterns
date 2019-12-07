@@ -1,21 +1,25 @@
 var cnv = document.querySelector('canvas');
 var ctx = cnv.getContext('2d')
 
+cnv.width = window.innerWidth;
+cnv.height = window.innerHeight;
+
 var center = {
     x: (cnv.width / 2),
     y: (cnv.height / 2)
 }
 
+var patternSize = 4;
+var iterations = 16;
+
 render();
 
 function render() {
-    ctx.clearRect(0, 0, cnv.width, cnv.height);
-
 
     var initialPattern = generatePattern();
     var newPattern = rotatePattern(initialPattern);    
 
-    for(let i = 0; i < 10; i++) {
+    for(let i = 0; i < iterations; i++) {
         newPattern = rotatePattern(initialPattern);
         initialPattern = initialPattern.concat(newPattern);
     }
@@ -26,12 +30,6 @@ function render() {
 function rotatePattern(pattern) {
     
     let newPattern = clonePattern(pattern);
-
-    // rotating
-    /* for(let i = 0; i < newPattern.length; i++) {
-        newPattern[i].x = pattern[i].y * -1;
-        newPattern[i].y = pattern[i].x;
-    } */
 
     let angle = (90 * Math.PI / 180);
     for(let i = 0; i < newPattern.length; i++) {
@@ -78,7 +76,7 @@ function generatePattern() {
 
     pattern.push({x, y});
 
-    for(let i = 0; i < 9; i++) {
+    for(let i = 0; i < patternSize; i++) {
 
         let lastElement = pattern[pattern.length - 1];
         let mutant = mutate(lastElement);
@@ -101,6 +99,9 @@ function generatePattern() {
 }
 
 function drawPattern(pattern) {
+
+    ctx.fillStyle = "orange"
+
     for(let i = 0; i < pattern.length; i++) {
         ctx.fillRect(pattern[i].x, pattern[i].y, 1, 1);
     }
