@@ -92,15 +92,14 @@ function generatePattern() {
     }
 
     function rng() {
-        return Math.round(Math.random() * 2) -1;
+        return Math.round(Math.random() * 4) -2;        
     }
-
     return pattern;
 }
 
 function drawPattern(pattern) {
 
-    ctx.fillStyle = "orange"
+    ctx.fillStyle = '#' + Math.floor(Math.random()*16777215).toString(16);
 
     for(let i = 0; i < pattern.length; i++) {
         ctx.fillRect(pattern[i].x, pattern[i].y, 1, 1);
