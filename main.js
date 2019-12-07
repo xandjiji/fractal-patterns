@@ -1,30 +1,49 @@
-var cnv = document.querySelector('canvas');
-var ctx = cnv.getContext('2d')
+var canvas = document.querySelector('canvas');
+var context = canvas.getContext('2d')
 
-cnv.width = window.innerWidth;
-cnv.height = window.innerHeight;
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
 
 var center = {
-    x: (cnv.width / 2),
-    y: (cnv.height / 2)
+    x: (canvas.width / 2),
+    y: (canvas.height / 2)
 }
 
-var patternSize = 4;
-var iterations = 16;
+var patternSize, iterations;
 
-render();
+main();
 
-function render() {
+function main() {
+    setConstants();
 
     var initialPattern = generatePattern();
-    var newPattern = rotatePattern(initialPattern);    
+    var finalPattern = clonePattern(initialPattern);
+    var newPattern = rotatePattern(finalPattern);    
 
     for(let i = 0; i < iterations; i++) {
-        newPattern = rotatePattern(initialPattern);
-        initialPattern = initialPattern.concat(newPattern);
+        newPattern = rotatePattern(finalPattern);
+        finalPattern = finalPattern.concat(newPattern);
     }
-    
-    drawPattern(initialPattern);
+
+    context.fillStyle = '#' + Math.floor(Math.random()*16777215).toString(16);
+
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    drawPattern(finalPattern);
+}
+
+function setConstants() {
+    let number = Math.round(Math.random());
+
+    // low iterations
+    if(number) {        
+        patternSize = Math.floor(Math.random() * 10000) + 10;
+        iterations = Math.floor(Math.random() * 4) + 1;
+
+    // high iterations
+    } else {
+        patternSize = Math.floor(Math.random() * 20) + 1;
+        iterations = Math.floor(Math.random() * 6) + 10;
+    }    
 }
 
 function rotatePattern(pattern) {
@@ -32,6 +51,7 @@ function rotatePattern(pattern) {
     let newPattern = clonePattern(pattern);
 
     let angle = (90 * Math.PI / 180);
+    
     for(let i = 0; i < newPattern.length; i++) {
         newPattern[i].x = (pattern[i].x * Math.cos(angle)) - (pattern[i].y * Math.sin(angle));
         newPattern[i].y = (pattern[i].x * Math.sin(angle)) + (pattern[i].y * Math.cos(angle));
@@ -77,7 +97,7 @@ function generatePattern() {
     pattern.push({x, y});
 
     for(let i = 0; i < patternSize; i++) {
-
+        
         let lastElement = pattern[pattern.length - 1];
         let mutant = mutate(lastElement);
         pattern.push(mutant);
@@ -98,10 +118,7 @@ function generatePattern() {
 }
 
 function drawPattern(pattern) {
-
-    ctx.fillStyle = '#' + Math.floor(Math.random()*16777215).toString(16);
-
     for(let i = 0; i < pattern.length; i++) {
-        ctx.fillRect(pattern[i].x, pattern[i].y, 1, 1);
+        context.fillRect(pattern[i].x, pattern[i].y, 1, 1);
     }
 }
